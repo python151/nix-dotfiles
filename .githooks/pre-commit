@@ -1,0 +1,4 @@
+#!/bin/sh
+cp /etc/nixos/configuration.nix configuration.nix
+cp ~/.zshrc .zshrc
+git add configuration.nix .zshrc
