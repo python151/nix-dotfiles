@@ -21,5 +21,6 @@ cp ~/.config/.zshrc ~/.zshrc
 
 (Optional) If you want those files to be automatically copied over when you commit to this repo, you'll need to set the git hooks directory to `.githooks` rather than the default of `.git/hooks `
 ```
+cd ~/.config
 git config core.hooksPath .githooks
 ```
