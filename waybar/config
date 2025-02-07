@@ -1,0 +1,103 @@
+{
+	"layer": "top",
+	"modules-left": ["custom/launcher","cpu","memory","custom/media","tray"],
+	"modules-center": ["network#wired", "network#lo", "network#wireless"],
+	"modules-right": ["custom/notifs", "backlight","pulseaudio","clock", "battery"],
+
+	"pulseaudio": {
+		"tooltip": false,
+		"scroll-step": 5,
+		"format": "{icon} {volume}%",
+		"format-muted": "{icon} {volume}%",
+		"on-click":"pactl set-sink-mute @DEFAULT_SINK@ toggle",
+		"format-icons": {
+			"default": ["", "", ""]
+		}
+	},
+    "custom/notifs": {
+        "exec": "cat ~/.config/waybar/current_notification_state",
+        "on-click": "~/.config/waybar/toggle_notifications.sh",
+        "interval": 1
+    },
+    "network#wireless": {
+	    "interface": "w*",
+	    "format": "{ifname}",
+	    "format-wifi": "{essid} ({signalStrength}%) ",
+	    "format-ethernet": "{ifname}  ",
+	    "format-disconnected": "", //An empty format will hide the module.
+	    "tooltip-format": "{ifname}",
+	    "tooltip-format-wifi": "{essid} ({signalStrength}%) ",
+	    "tooltip-format-ethernet": "{ipaddr}",
+	    "tooltip-format-disconnected": "Disconnected",
+	    "max-length": 50
+    },
+    "network#lo": {
+	    "interface": "lo",
+	    "format": "",
+	    "format-wifi": "{essid} ({signalStrength}%) ",
+	    "format-ethernet": "{ifname}  ",
+	    "format-disconnected": "", //An empty format will hide the module.
+	    "tooltip-format": "{ifname}",
+	    "tooltip-format-wifi": "{essid} ({signalStrength}%) ",
+	    "tooltip-format-ethernet": "{ifname}",
+	    "tooltip-format-disconnected": "Disconnected",
+	    "max-length": 50
+    },
+
+    "network#wired": {
+	    "interface": "e*",
+	    "format": "{ifname}",
+	    "format-wifi": "{essid} ({signalStrength}%) ",
+	    "format-ethernet": "{ifname}  ",
+	    "format-disconnected": "", //An empty format will hide the module.
+	    "tooltip-format": "{ipaddr}",
+	    "tooltip-format-wifi": "{essid} ({signalStrength}%) ",
+	    "tooltip-format-ethernet": "{ipaddr}",
+	    "tooltip-format-disconnected": "Disconnected",
+	    "max-length": 50
+    },
+
+    "backlight": {
+		"tooltip": false,
+		"format": " {}%",
+		"interval":1,
+        "on-scroll-up": "light -A 5",
+		"on-scroll-down": "light -U 5"
+	},
+    "battery": {
+        "states": {
+            "good": 95,
+            "warning": 30,
+            "critical": 20
+        },
+        "format": "{icon}  {capacity}%",
+        "format-charging": " {capacity}%",
+        "format-plugged": " {capacity}%",
+        "format-alt": "{time} {icon}",
+        "format-icons": ["", "", "", "", ""]
+    },
+	"tray":{
+		"icon-size":18,
+		"spacing": 10
+	},
+    "clock": {
+        "format": "  {:%H:%M}",
+        "format-alt": "{:%a, %d. %b  %H:%M:%S}"
+    },
+    "cpu": {
+        "interval": 5,
+        "format": " {}%",
+        "max-length": 10
+    },
+    "memory": {
+        "interval": 5,
+        "format": " {}%",
+        "max-length": 10
+    },
+
+    "custom/launcher":{
+        "format": " ",
+        "on-click": "wofi --show drun -I",
+        "on-click-right": "killall wofi"
+    },
+}
