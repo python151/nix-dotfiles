@@ -89,6 +89,14 @@
   security.rtkit.enable = true;
   services.pipewire.enable = false;
 
+  services.tlp = {
+    enable = true;
+    settings = {
+      TLP_DEFAULT_MODE = "BAT";
+      TLP_PERSISTENT_DEFAULT = 1;
+    };
+  };
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.emily747 = {
     isNormalUser = true;
@@ -109,7 +117,6 @@
       openvpn
       qemu
       p7zip
-      tlp
       stdenv
       gdb
       wireshark
