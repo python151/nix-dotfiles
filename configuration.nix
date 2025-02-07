@@ -65,6 +65,21 @@
   security.pam.services.hyprlock = {};
   # End hyprland bullshit part 1
 
+  # zsh stuff
+  users.defaultUserShell=pkgs.zsh; 
+  programs.zsh = {
+    enable = true;
+    enableCompletion = true;
+    autosuggestions.enable = true;
+    syntaxHighlighting.enable = true;
+
+    shellAliases = {
+      ll = "ls -laugh";
+      update = "sudo nixos-rebuild switch";
+    };
+    histSize = 10000;
+  };
+
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
