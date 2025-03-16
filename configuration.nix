@@ -18,17 +18,20 @@
   networking.hostName = "nix-framework"; # Define your hostname.
 
   networking.extraHosts = ''
-    192.168.1.116 jellyfin.lan
+    172.16.100.3 nix-server
   '';
-
 
   networking.wireguard.interfaces.wg0 = {
 	ips = [ "172.16.100.2/24" ];
 	listenPort = 51820;
         postSetup = ''
-          ip route add 209.16.157.106/32 via 192.168.1.1
+	  cp /etc/resolv.conf /etc/resolv.conf-old
+	  echo -ne "nameserver 10.38.38.2\nnameserver 10.38.42.2\nnameserver 1.1.1.1\nnameserver 9.9.9.9" > /etc/resolv.conf
+	  default_gw=$(ip route | grep default | /run/current-system/sw/bin/awk '{print $3}')
+          ip route add 209.16.157.106/32 via $default_gw
         ''; 
         postShutdown = ''
+	  mv /etc/resolv.conf-old /etc/resolv.conf
           ip route del 209.16.157.106/32
         '';
 	privateKeyFile = "/var/secrets/wireguard_key";

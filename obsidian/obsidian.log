@@ -2472,3 +2472,11 @@
 2025-03-16 02:52:09 Success.
 2025-03-16 02:52:09 Latest version is 1.8.9
 2025-03-16 02:52:09 App is up to date.
+2025-03-16 03:52:09 Checking for update using Github
+2025-03-16 03:52:09 Success.
+2025-03-16 03:52:09 Latest version is 1.8.9
+2025-03-16 03:52:09 App is up to date.
+2025-03-16 04:52:09 Checking for update using Github
+2025-03-16 04:52:11 Failed to check for update using Github (net::ERR_NAME_NOT_RESOLVED)
+2025-03-16 04:52:11 Checking for update using obsidian.md
+2025-03-16 04:52:13 Failed to check for update using obsidian.md (net::ERR_NAME_NOT_RESOLVED)
