@@ -21,6 +21,27 @@
     192.168.1.116 jellyfin.lan
   '';
 
+
+  networking.wireguard.interfaces.wg0 = {
+	ips = [ "172.16.100.2/24" ];
+	listenPort = 51820;
+        postSetup = ''
+          ip route add 209.16.157.106/32 via 192.168.1.1
+        ''; 
+        postShutdown = ''
+          ip route del 209.16.157.106/32
+        '';
+	privateKeyFile = "/var/secrets/wireguard_key";
+	peers = [
+		{
+			publicKey = "0yimYDtHWQ9IxTlt78D8yaZ8u9R+HpopAH5nT+YM3VE=";
+			allowedIPs = [ "0.0.0.0/0" ];
+			endpoint = "209.16.157.106:51820";
+			persistentKeepalive = 25;
+		}
+	];
+  };
+
   # Enable networking
   networking.networkmanager.enable = true;
 
@@ -47,7 +68,6 @@
 
   # Enable the KDE Desktop Environment
   #services.xserver.desktopManager.plasma5.enable = true;
-  #services.displayManager.sddm.enable = true;
 
   # Configure keymap in X11
   #services.xserver.xkb = {
@@ -57,6 +77,11 @@
 
   # Hyprland bullshit part 1
   programs.hyprland.enable = true;
+  programs.hyprland.withUWSM  = true;
+  programs.uwsm.enable = true;
+#  services.xserver.enable = true;
+#  services.displayManager.sddm.enable = true;
+#  services.displayManager.sddm.wayland.enable = true;
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
   programs.nm-applet.enable = true;
   programs.thunar.enable = true;
@@ -101,8 +126,9 @@
   users.users.emily747 = {
     isNormalUser = true;
     description = "Emily (the cute one)";
-    extraGroups = ["networkmanager" "wheel" "dialout"];
+    extraGroups = ["networkmanager" "wheel" "dialout" "kvm" ];
     packages = with pkgs; [
+      file
       chromium
       kitty
       neovim
@@ -115,7 +141,6 @@
       keepassxc
       rclone
       openvpn
-      qemu
       p7zip
       stdenv
       gdb
@@ -141,9 +166,18 @@
       freecad
       signal-desktop
       jellyfin-media-player
+      pwntools
+      vlc
     ];
   };
 
+  # Virtualization
+  programs.virt-manager.enable = true;
+  users.groups.libvirtd.members = ["emily747"];
+  virtualisation.libvirtd.enable = true;
+  virtualisation.spiceUSBRedirection.enable = true;
+
+  
   virtualisation.containers.enable = true;
   virtualisation.podman = {
     enable = true;
@@ -155,6 +189,8 @@
     defaultNetwork.settings.dns_enabled = true;
   };
 
+  virtualisation.waydroid.enable = true;
+
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
   hardware.bluetooth.settings = {
@@ -165,6 +201,7 @@
 
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
+    libsodium
     cairo
     dbus
     fontconfig
@@ -233,9 +270,12 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    qemu
     nix-ld
     steam-run
     pkg-config
+    pkgs.man-pages
+    pkgs.man-pages-posix
     gcc # C and C++ compiler
     gpp # C++ compiler specifically
     libtool # Tool for managing libraries
@@ -250,10 +290,19 @@
     wl-clipboard # for clipboard and such
     hyprpaper # wallpaper
     brightnessctl # controls screen brightness
+    # end hyprland bullshit
+    docker-compose
   ];
+
+  environment.extraInit = ''
+    if [ -z "$DOCKER_HOST" -a -n "$XDG_RUNTIME_DIR" ]; then
+      export DOCKER_HOST="unix://$XDG_RUNTIME_DIR/podman/podman.sock"
+    fi
+  '';
+
   
   fonts.packages = with pkgs; [ nerdfonts ];
-
+  documentation.dev.enable = true;
   programs.steam = {
     enable = true;
     remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
@@ -262,6 +311,7 @@
 
   hardware.graphics.enable = true;
 
+
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
@@ -269,7 +319,7 @@
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
+  networking.firewall.allowedUDPPorts = [ 51820 ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
