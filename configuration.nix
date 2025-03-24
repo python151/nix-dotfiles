@@ -19,6 +19,10 @@
 
   networking.extraHosts = ''
     172.16.100.3 nix-server
+    172.16.100.4 emily747-enclave
+    209.16.157.106 emily747-ingress
+    10.38.41.233 emily747-web
+    10.38.41.243 lab-proxmox
   '';
 
   networking.wireguard.interfaces.wg0 = {
@@ -128,7 +132,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.emily747 = {
     isNormalUser = true;
-    description = "Emily (the cute one)";
+    description = "Emily ;3";
     extraGroups = ["networkmanager" "wheel" "dialout" "kvm" ];
     packages = with pkgs; [
       file
@@ -273,6 +277,7 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    mommy
     qemu
     nix-ld
     steam-run
